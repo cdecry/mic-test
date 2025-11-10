@@ -6,22 +6,22 @@
 
 int main()
 {
-	gfxInitDefault();
-	consoleInit(GFX_BOTTOM, NULL);
+  gfxInitDefault();
+  consoleInit(GFX_BOTTOM, NULL);
 
-	while(aptMainLoop())
-	{
-		hidScanInput();
+  while(aptMainLoop())
+  {
+    hidScanInput();
     gspWaitForVBlank();
-    
-		u32 kDown = hidKeysDown();
-		if (kDown & KEY_START)
-			break; // return to launcher
 
-		gfxFlushBuffers();
-		gfxSwapBuffers();
-	}
+    u32 kDown = hidKeysDown();
+    if (kDown & KEY_START)
+    break; // return to launcher
 
-	gfxExit();
-	return 0;
+    gfxFlushBuffers();
+    gfxSwapBuffers();
+  }
+
+  gfxExit();
+  return 0;
 }
