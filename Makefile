@@ -30,7 +30,8 @@ include $(DEVKITARM)/3ds_rules
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
 SOURCES		:=  source \
-              source/utils
+              source/utils \
+              source/audio \
 DATA		:=	data
 INCLUDES	:=	include
 
