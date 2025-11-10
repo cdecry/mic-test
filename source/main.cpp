@@ -5,7 +5,12 @@ int main() {
   consoleInit(GFX_BOTTOM, NULL);
   inf("press start to exit\n");
 
-  bool initialized = true;
+  static bool initialized = true;
+  static bool isPlaying = false;
+
+  static ndspWaveBuf wave;
+  memset(&wave, 0, sizeof(wave));
+
   u32 micbuf_size = 0x30000;
 	u32 micbuf_pos = 0;
 	u8* micbuf = static_cast<u8*>(memalign(0x1000, micbuf_size));
@@ -28,7 +33,7 @@ int main() {
   u32 audiobuf_size = 0x100000;
   u32 audiobuf_pos = 0;
   u8* audiobuf = static_cast<u8*>(linearAlloc(audiobuf_size));
-  
+
   if (initialized) {
     inf("\nmic is ready!");
   }
@@ -58,7 +63,7 @@ int main() {
           micbuf_datasize,
           true
         );
-        if (R_SUCCEEDED(r)) ok("sampling started.");
+        if (R_SUCCEEDED(r)) inf("recording started...");
         else err("failed to start sampling.");
         }
 
@@ -73,19 +78,25 @@ int main() {
       }
 
       if (hidKeysUp() & KEY_A) {
-        inf("stopping sampling...");
         if (R_FAILED(MICU_StopSampling())) err("failed to stop sampling.");
+        else ok("recording stopped.");
+      }
 
-        ndspWaveBuf wave;
-        memset(&wave, 0, sizeof(wave));
+      if (kDown & KEY_B) {
         wave.data_pcm16 = (s16*)audiobuf;
         wave.nsamples = audiobuf_pos / 2;
         wave.looping = false;
+        isPlaying = true;
 
-        inf("starting playback...");
+        inf("playback starting...");
         DSP_FlushDataCache(wave.data_pcm16, audiobuf_pos);
         ndspChnWaveBufAdd(0, &wave);
       }
+    }
+
+    if (isPlaying && wave.status == NDSP_WBUF_DONE) {
+      isPlaying = false;
+      ok("playback finished.");
     }
 
     gfxFlushBuffers();
