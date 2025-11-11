@@ -29,9 +29,7 @@ include $(DEVKITARM)/3ds_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=  source \
-              source/utils \
-              source/audio \
+SOURCES		:=  source source/utils source/audio source/net
 DATA		:=	data
 INCLUDES	:=	include
 
@@ -45,7 +43,7 @@ ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -O2 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
-			$(ARCH)
+			$(ARCH) -Wno-psabi
 
 CFLAGS	+=	$(INCLUDE) -D__3DS__
 
@@ -54,13 +52,13 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -std=gnu++11 -fno-exceptions
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lctru -lm -lcitro3d
+LIBS	:= -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lctru -lcitro3d -lm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(CTRULIB)
+LIBDIRS	:= $(CTRULIB) $(PORTLIBS)
 
 
 #---------------------------------------------------------------------------------

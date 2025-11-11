@@ -5,5 +5,7 @@
 
 #include "utils/common.h"
 #include "audio/audio.h"
+#include "net/crl.h"
+#include "net/socketService.h"
 
 #endif

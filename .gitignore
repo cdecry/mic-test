@@ -5,3 +5,4 @@
 /build
 /ref
 /.vscode
+.env

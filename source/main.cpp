@@ -5,6 +5,8 @@ int main() {
   consoleInit(GFX_BOTTOM, NULL);
   inf("press start to exit\n");
 
+  SocketService socketService;
+  socketService.initSocketService();
   inf("initializing audio...");
   audio::State a;
   if (!audio::init(a)) {
@@ -34,6 +36,15 @@ int main() {
       else err("failed to stop recording.");
     }
     if (kDown & KEY_B) {
+      std::string url = "https://jsonplaceholder.typicode.com/posts";
+      std::string json = R"({"title":"foo","body":"bar","userId":1})";
+
+      std::string resp = sendHTTPPost(
+      url,
+      json,
+      {"Content-Type: application/json; charset=UTF-8"}  // headers
+      );
+      ok(resp.c_str());
       if (audio::startPlayback(a)) inf("playback started...");
       else err("failed to start playback.");
     }
